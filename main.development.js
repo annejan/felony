@@ -1,13 +1,13 @@
-import { app, BrowserWindow, Menu, crashReporter, shell, autoUpdater } from 'electron'
-const { version } = require('./package.json')
+import { app, BrowserWindow, Menu, shell, autoUpdater } from 'electron' // eslint-disable-line
 import open from 'open'
+
+const { version } = require('./package.json')
 
 let menu
 let template
 let mainWindow = null
 
-crashReporter.start()
-const feedUrl = `https://felony-app-update.herokuapp.com/update/${process.platform}_${process.arch}/${version}`
+const feedUrl = `https://felony-app-update.herokuapp.com/update/${ process.platform }_${ process.arch }/${ version }`
 
 if (process.env.NODE_ENV !== 'development') {
   autoUpdater.setFeedURL(feedUrl)
@@ -24,7 +24,6 @@ if (process.env.NODE_ENV !== 'development') {
 
     autoUpdater.on('checking-for-update', () => {
       check = false
-      console.log('checking')
     })
 
     autoUpdater.on('update-available', () => {
@@ -40,25 +39,18 @@ if (process.env.NODE_ENV !== 'development') {
       autoUpdater.quitAndInstall()
     })
   } catch (err) {
-    console.log('error', err)
+    console.log('error', err) // eslint-disable-line no-console
   }
 }
 
 
-if (process.env.NODE_ENV === 'development') {
-  require('electron-debug')()
-}
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit()
-})
-
-app.on('ready', () => {
+const createWindow = () => {
   mainWindow = new BrowserWindow({
     'show': false,
+    'resizable': false,
     'width': 295,
     'height': 435,
-    'title-bar-style': 'hidden',
+    'titleBarStyle': 'hidden',
   })
 
   mainWindow.loadURL(`file://${ __dirname }/app/app.html`)
@@ -68,7 +60,7 @@ app.on('ready', () => {
     mainWindow.focus()
   })
 
-  mainWindow.webContents.on('new-window', function (event, url) {
+  mainWindow.webContents.on('new-window', (event, url) => {
     event.preventDefault()
     open(url)
   })
@@ -154,7 +146,9 @@ app.on('ready', () => {
         label: 'Toggle Full Screen',
         accelerator: 'Ctrl+Command+F',
         click() {
-          mainWindow.setFullScreen(!mainWindow.isFullScreen())
+          if (mainWindow) {
+            mainWindow.setFullScreen(!mainWindow.isFullScreen())
+          }
         },
       }, {
         label: 'Toggle Developer Tools',
@@ -166,7 +160,9 @@ app.on('ready', () => {
         label: 'Toggle Full Screen',
         accelerator: 'Ctrl+Command+F',
         click() {
-          mainWindow.setFullScreen(!mainWindow.isFullScreen())
+          if (mainWindow) {
+            mainWindow.setFullScreen(!mainWindow.isFullScreen())
+          }
         },
       }],
     }, {
@@ -237,7 +233,9 @@ app.on('ready', () => {
         label: 'Toggle &Full Screen',
         accelerator: 'F11',
         click() {
-          mainWindow.setFullScreen(!mainWindow.isFullScreen())
+          if (mainWindow) {
+            mainWindow.setFullScreen(!mainWindow.isFullScreen())
+          }
         },
       }, {
         label: 'Toggle &Developer Tools',
@@ -249,7 +247,9 @@ app.on('ready', () => {
         label: 'Toggle &Full Screen',
         accelerator: 'F11',
         click() {
-          mainWindow.setFullScreen(!mainWindow.isFullScreen())
+          if (mainWindow) {
+            mainWindow.setFullScreen(!mainWindow.isFullScreen())
+          }
         },
       }],
     }, {
@@ -278,5 +278,20 @@ app.on('ready', () => {
     }]
     menu = Menu.buildFromTemplate(template)
     mainWindow.setMenu(menu)
+  }
+}
+
+if (process.env.NODE_ENV === 'development') {
+  require('electron-debug')() // eslint-disable-line global-require
+}
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit()
+})
+
+app.on('ready', createWindow)
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow()
   }
 })

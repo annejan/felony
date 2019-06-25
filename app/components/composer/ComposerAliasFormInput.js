@@ -1,12 +1,10 @@
-'use strict'
-
 import React, { Component } from 'react'
 import ReactCSS from 'reactcss'
 
 class ComposerAliasFormInput extends Component {
   state = { focus: false }
 
-  classes() {
+  classes() { // eslint-disable-line
     return {
       'default': {
         input: {
@@ -22,6 +20,9 @@ class ComposerAliasFormInput extends Component {
           fontFamily: 'Andale Mono',
           flexGrow: '1',
           transition: '200ms ease-in-out',
+        },
+        error: {
+          border: 'solid 2px #FF1122',
         },
       },
       'hover': {
@@ -47,13 +48,11 @@ class ComposerAliasFormInput extends Component {
     return (
       <input
         type={ this.props.type }
-        is="input"
+        is={ !this.props.error ? 'input' : 'input error' }
         placeholder={ this.props.placeholder }
-        handleKeyDown={ this.props.onKeyDown }
+        onKeyDown={ this.props.onKeyDown }
         onFocus={ () => { this.setState({ focus: true }) } }
-
         onBlur={ () => { this.setState({ focus: false }) } }
-
       />
     )
   }

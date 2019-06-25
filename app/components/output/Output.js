@@ -1,18 +1,14 @@
-'use strict'
-
 import React, { Component } from 'react'
 import ReactCSS from 'reactcss'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import colors from '../../assets/styles/variables/colors'
 
 import { Icon } from '../common/index'
 
-import colors from '../../assets/styles/variables/colors'
-
 class Output extends Component {
-
   state = { copied: false }
 
-  classes() {
+  classes() { // eslint-disable-line
     return {
       'default': {
         wrap: {
@@ -54,6 +50,7 @@ class Output extends Component {
           flex: '1',
           position: 'relative',
           margin: '0 20px',
+          marginTop: '-10px',
         },
         textarea: {
           Absolute: '23px auto 10px auto',
@@ -66,10 +63,11 @@ class Output extends Component {
           borderRadius: '2px',
           fontSize: '14px',
           fontFamily: 'Andale Mono',
+          marginTop: '5px',
         },
         actions: {
-          marginTop: '-10px',
-          height: '40px',
+          marginTop: '-18px',
+          height: '55px',
           padding: '20px',
         },
         confirm: {
@@ -81,6 +79,13 @@ class Output extends Component {
           cursor: 'pointer',
           textAlign: 'center',
           display: 'block',
+        },
+        cancel: {
+          color: 'rgba(255,255,255,.4)',
+          textAlign: 'center',
+          display: 'block',
+          marginTop: '7px',
+          cursor: 'pointer',
         },
       },
       'isShowingOutput': {
@@ -100,47 +105,64 @@ class Output extends Component {
     this.props.setOutput('')
     this.props.toggleComposer()
   }
+  handleNevermind = () => {
+    this.props.toggleOutput()
+  }
 
   handleKeyDown = (e) => {
     (e.keyCode === 27 && this.props.isShowingOutput) && this.handleCancel()
   }
 
+
   render() {
     return (
       <div>
-      <div is="wrap" ref="wrap">
-        <div is="head">
-          <div is="title">
-            <div is="icon">
-              <Icon name="check" color="#00E676" />
-            </div>
+        <div is="wrap">
+          <div is="head">
+            <div is="title">
+              <div is="icon">
+                <Icon name="check" color="#00E676" />
+              </div>
             Success
           </div>
-          <div is="subtitle">Share this anywhere on the web.</div>
-        </div>
+            <div is="subtitle">Share this anywhere on the web.</div>
+          </div>
           <div is="text">
-            <textarea is="textarea" ref="textarea" value={ this.props.output } />
+            <textarea is="textarea" value={ this.props.output } />
           </div>
 
-        <div is="actions">
-          <CopyToClipboard
-            text={ this.props.output }
-            onCopy={ () => {
-              this.setState({ copied: true })
-              this.props.clearSelectedKeys()
-              setTimeout(() => this.handleCancel(), 1500)
-            } }
-          >
-            <a is="link confirm">
-              { this.state.copied ?
+          <div is="actions">
+            <CopyToClipboard
+              text={ this.props.output }
+              onCopy={ () => {
+                this.setState({ copied: true })
+                this.props.clearSelectedKeys()
+                setTimeout(() => this.handleCancel(), 1500)
+              } }
+            >
+              <a is="link confirm">
+                { this.state.copied ?
                 'Copied ...Closing'
               :
                 'Copy & Close'
               }</a>
-          </CopyToClipboard>
+
+            </CopyToClipboard>
+            <div>
+              <a
+                is="link cancel"
+                onClick={ () => {
+                  this.setState({ copied: true })
+                  this.handleCancel()
+                } }
+              >
+                nevermind
+              </a>
+
+            </div>
+          </div>
         </div>
       </div>
-    </div>
     )
   }
 }
