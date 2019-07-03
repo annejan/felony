@@ -23,7 +23,9 @@
     "package": "cross-env NODE_ENV=production node -r babel-register package.js",
     "package-all": "npm run package -- --all",
     "postinstall": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
-    "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run start-hot\""
+    "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run start-hot\"",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -132,10 +134,12 @@
     "source-map-support": "^0.4.0",
     "underscore-db": "^0.9.1",
     "url-loader": "^0.6.0",
-    "uuid": "^2.0.1"
+    "uuid": "^2.0.1",
+    "snyk": "^1.189.0"
   },
   "devEngines": {
     "node": ">=4.x",
     "npm": ">=2.x"
-  }
+  },
+  "snyk": true
 }
